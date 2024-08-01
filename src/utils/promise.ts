@@ -32,23 +32,32 @@ export async function withTimeout<T>(time : number, promise : Promise<T>) : Prom
  * Creates a Promise that resolves on the next event of type `eventName` that is fired
  * by `target`. Useful for example to await the `load` event on an `img` element:
  *
- *     await eventOn(imgElement, 'load')
+ *     await nextEvent(imgElement, 'load')
  *
  * If the event is never fired, the promise is awaited indefinitely. You might want to
  * wrap it with `withTimeout`:
  *
- *     await withTimeout(100, eventOn(imgElement, 'load'))
+ *     await withTimeout(100, nextEvent(imgElement, 'load'))
  *
  */
-export function eventOn(target : EventTarget, eventName : string) : Promise<Event> {
+export function nextEvent(target: EventTarget, eventName: string): Promise<Event> {
   return new Promise(resolve => {
-    const listener : EventListener = event => {
+    const listener: EventListener = event => {
       target.removeEventListener(eventName, listener)
       resolve(event)
     }
 
     target.addEventListener(eventName, listener)
   })
+}
+
+/**
+ * TODO
+ */
+export async function* events(target: EventTarget, eventName: string) {
+  while (true) {
+    yield await nextEvent(target, eventName)
+  }
 }
 
 /* export function eventOn(
