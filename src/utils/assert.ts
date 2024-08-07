@@ -141,27 +141,3 @@ export function isOneOf<
 >(value: GeneralValue, array: AllowedValues): value is AllowedValues[number] {
   return array.includes(value)
 }
-
-/**
- * Returns `true` if `value` is neither `undefined` nor `null`. These two are doing the same thing:
- *
- *     if (isNonNullable(value)) { ... }
- *
- *     if (value !== undefined && value !== null) { ... }
- *
- * However, if you have an array of values such as:
- *
- *     const values: (string | undefined)[] = ...
- *
- * then `values.every(value => value !== undefined)` won't narrow the type down to `string[]`.
- * This changes in TypeScript 5.5 but until then `values.every(isNonNullable)` can do the job instead.
- */
-export function isNonNullable<T>(value: NonNullable<T> | undefined | null): value is NonNullable<T> {
-  if (value === undefined || value === null) {
-    value satisfies (undefined | null)
-    return false
-  } else {
-    value satisfies NonNullable<T>
-    return true
-  }
-}
