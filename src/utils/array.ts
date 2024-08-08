@@ -206,3 +206,32 @@ export function zip<T, U>(array1: readonly T[], array2: readonly U[]): [T, U][] 
 export function adjacentPairs<T>(array: readonly T[]): [T, T][] {
   return zip(array.slice(0, -1), array.slice(1))
 }
+
+/**
+ * 
+ *   MinArray<T, 1> === [T, ...T[]] | [...T[], T]
+ *   MinArray<T, 2> === [T, T, ...T[]] | [...T[], T, T]
+ *   MinArray<T, 3> === [T, T, T, ...T[]] | [...T[], T, T, T]
+ * 
+ */
+type MinArray<Item, MinLength extends number> = _MinArray<Item, MinLength, []>
+
+type _MinArray<
+  Item, 
+  MinLength extends number, 
+  MinItems extends Item[]
+> = 
+  MinItems['length'] extends MinLength 
+    ? [...MinItems, ...Item[]] | [...Item[], ...MinItems]
+    : _MinArray<Item, MinLength, [Item, ...MinItems]>
+
+function hasMinLength<T, const N extends number>(array: T[], minLength: N): array is MinArray<T,N> {
+  return array.length >= minLength
+}
+
+function test<T>(array: Array<T>) {
+  if (hasMinLength(array, 10)) {
+    array[8] satisfies T
+  }
+}
+
