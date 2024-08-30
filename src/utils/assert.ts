@@ -136,8 +136,8 @@ export function as<T>(value: T): T {
  *
  */
 export function isOneOf<
-  GeneralValue, // e.g. `string`
-  AllowedValues extends readonly GeneralValue[], // e.g. `readonly ['S', 'M', 'L', 'XL']`
->(value: GeneralValue, array: AllowedValues): value is AllowedValues[number] {
-  return array.includes(value)
+  GivenValue, // e.g. string | undefined
+  AllowedValue, // e.g. 'S' | 'M' | 'L' | 'XL'
+>(value: GivenValue | AllowedValue, array: readonly AllowedValue[]): value is AllowedValue {
+  return as<readonly (GivenValue | AllowedValue)[]>(array).includes(value)
 }
